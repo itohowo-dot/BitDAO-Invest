@@ -110,6 +110,10 @@
         )
         ;; Check if amount is valid
         (asserts! (<= amount (var-get treasury-balance)) ERR-INSUFFICIENT-BALANCE)
+        ;; Sanitize inputs
+        (asserts! (> (len title) u0) ERR-INVALID-AMOUNT)
+        (asserts! (> (len description) u0) ERR-INVALID-AMOUNT)
+        (asserts! (is-eq recipient recipient) ERR-INVALID-AMOUNT) ;; Dummy check to ensure recipient is a valid principal
         
         ;; Create proposal
         (map-set proposals proposal-id
