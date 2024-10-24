@@ -96,3 +96,38 @@
         (ok true)
     )
 )
+
+(define-public (create-proposal (title (string-ascii 50)) (description (string-ascii 500)) (amount uint) (recipient principal))
+    (let
+        (
+            (member-data (unwrap! (map-get? members tx-sender) err-not-member))
+            (proposal-id (+ (default-to u0 (get proposals-created member-data)) u1))
+        )
+        (asserts! (<= amount (var-get treasury-balance)) err-insufficient-balance)
+        
+        (map-set proposals proposal-id
+            {
+                creator: tx-sender,
+                title: title,
+                description: description,
+                amount: amount,
+                recipient: recipient,
+                created-at: block-height,
+                expires-at: (+ block-height (var-get proposal-duration)),
+                yes-votes: u0,
+                no-votes: u0,
+                executed: false,
+                total-votes: u0
+            }
+        )
+        
+        (map-set members tx-sender
+            (merge member-data 
+                {
+                    proposals-created: proposal-id
+                }
+            )
+        )
+        (ok proposal-id)
+    )
+)
