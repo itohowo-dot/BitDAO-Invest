@@ -169,3 +169,29 @@
         (ok true)
     )
 )
+
+(define-public (execute-proposal (proposal-id uint))
+    (let
+        (
+            (proposal (unwrap! (map-get? proposals proposal-id) err-proposal-not-found))
+            (total-votes (get total-votes proposal))
+            (yes-votes (get yes-votes proposal))
+        )
+        (asserts! (>= block-height (get expires-at proposal)) err-proposal-expired)
+        (asserts! (not (get executed proposal)) err-proposal-executed)
+        (asserts! (>= (* yes-votes u100) (* total-votes (var-get quorum-threshold))) err-insufficient-quorum)
+        
+        (try! (as-contract (stx-transfer? (get amount proposal) tx-sender (get recipient proposal))))
+        
+        (map-set proposals proposal-id
+            (merge proposal
+                {
+                    executed: true
+                }
+            )
+        )
+        
+        (var-set treasury-balance (- (var-get treasury-balance) (get amount proposal)))
+        (ok true)
+    )
+)
