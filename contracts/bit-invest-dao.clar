@@ -48,3 +48,22 @@
         total-votes: uint
     }
 )
+
+(define-map votes {proposal-id: uint, voter: principal} 
+    {
+        vote: bool,
+        power: uint
+    }
+)
+
+;; Private Functions
+(define-private (is-member (address principal))
+    (is-some (map-get? members address))
+)
+
+(define-private (check-is-member (address principal))
+    (if (is-member address)
+        (ok true)
+        err-not-member
+    )
+)
