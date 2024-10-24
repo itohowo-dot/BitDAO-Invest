@@ -67,3 +67,32 @@
         err-not-member
     )
 )
+
+(define-private (calculate-voting-power (balance uint))
+    (/ balance u1000000) ;; 1 voting power per STX
+)
+
+;; Public Functions
+(define-public (join-dao)
+    (let
+        (
+            (payment (stx-transfer? minimum-membership-fee tx-sender (as-contract tx-sender)))
+        )
+        (asserts! (is-ok payment) err-insufficient-balance)
+        (asserts! (not (is-member tx-sender)) err-already-member)
+        
+        (map-set members tx-sender
+            {
+                joined-at: block-height,
+                stx-balance: minimum-membership-fee,
+                voting-power: (calculate-voting-power minimum-membership-fee),
+                proposals-created: u0,
+                last-vote-height: u0
+            }
+        )
+        
+        (var-set total-members (+ (var-get total-members) u1))
+        (var-set treasury-balance (+ (var-get treasury-balance) minimum-membership-fee))
+        (ok true)
+    )
+)
