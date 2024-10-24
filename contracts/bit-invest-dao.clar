@@ -32,3 +32,19 @@
         last-vote-height: uint
     }
 )
+
+(define-map proposals uint 
+    {
+        creator: principal,
+        title: (string-ascii 50),
+        description: (string-ascii 500),
+        amount: uint,
+        recipient: principal,
+        created-at: uint,
+        expires-at: uint,
+        yes-votes: uint,
+        no-votes: uint,
+        executed: bool,
+        total-votes: uint
+    }
+)
