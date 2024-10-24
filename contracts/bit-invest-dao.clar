@@ -195,3 +195,16 @@
         (ok true)
     )
 )
+
+(define-read-only (get-vote (proposal-id uint) (voter principal))
+    (map-get? votes {proposal-id: proposal-id, voter: voter})
+)
+
+(define-read-only (get-dao-info)
+    {
+        total-members: (var-get total-members),
+        treasury-balance: (var-get treasury-balance),
+        minimum-membership-fee: (var-get minimum-membership-fee),
+        quorum-threshold: (var-get quorum-threshold)
+    }
+)
