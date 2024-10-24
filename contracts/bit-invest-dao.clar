@@ -21,3 +21,14 @@
 (define-data-var quorum-threshold uint u51) ;; 51% required for proposal passage
 (define-data-var total-members uint u0)
 (define-data-var treasury-balance uint u0)
+
+;; Data Maps
+(define-map members principal 
+    {
+        joined-at: uint,
+        stx-balance: uint,
+        voting-power: uint,
+        proposals-created: uint,
+        last-vote-height: uint
+    }
+)
